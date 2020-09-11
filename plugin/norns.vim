@@ -28,10 +28,11 @@ augroup norns
 augroup END
 
 " Global variables
-let g:norns_ip = "192.168.0.70" " TODO: Find a way to do this dynamically
+let g:norns_ip = "norns" " TODO: Find a way to do this dynamically
 let g:norns_project_path = ""
 let g:norns_project_basename = ""
 let g:norns_greeting='Hello. Are you ready?'
+let g:norns_ssh_pass="sleep"
 
 " Commands
 command! GetNornsProjectDir call norns#getNornsProjectDir()
@@ -46,7 +47,7 @@ endf
 
 fun! norns#syncToNorns()
 	call norns#getNornsProjectDir()
-	let cmd = printf('sshpass -p sleep rsync -a --delete --exclude=".*" --delete-excluded %s we@%s:/home/we/dust/code/', g:norns_project_path, g:norns_ip)
+	let cmd = printf('sshpass -p %s rsync -a --delete --exclude=".*" --delete-excluded %s we@%s:/home/we/dust/code/', g:norns_ssh_pass, g:norns_project_path, g:norns_ip)
 	execute printf("! %s", cmd)
 endf
 
