@@ -28,21 +28,54 @@ augroup norns
 augroup END
 
 " Global variables
-let g:norns_ip = "norns" " TODO: Find a way to do this dynamically
+let g:norns_ip = "norns.local" " TODO: Find a way to do this dynamically
 let g:norns_project_path = ""
 let g:norns_project_basename = ""
 let g:norns_greeting='Hello. Are you ready?'
 let g:norns_ssh_pass="sleep"
+
+" Set help browser
+if exists('$BROWSER')
+	let g:norns_help_browser=$BROWSER
+elseif executable('firefox')
+	let g:norns_help_browser="firefox"
+elseif executable('chrome')
+	let g:norns_help_browser="chrome"
+elseif executable('chromium')
+	let g:norns_help_browser="chromium"
+elseif executable('brave')
+	let g:norns_help_browser="brave"
+elseif executable('safari')
+	let g:norns_help_browser="safari"
+endif
 
 " Commands
 command! GetNornsProjectDir call norns#getNornsProjectDir()
 command! SyncToNorns call norns#syncToNorns()
 command! RunOnNorns call norns#runThis()
 command! NornsStart call norns#replStart()
+command! NornsReference call norns#openReference()
 
 fun! norns#getNornsProjectDir()
 	let g:norns_project_path = expand("%:p:h")	
 	let g:norns_project_basename = expand("%:p:h:t")	
+endf
+
+fun! norns#openReference()
+	let url = 'https://monome.org/docs/norns/script-reference/'
+	let cmd = printf("! %s %s", g:norns_help_browser, url)
+
+	if exists('g:norns_help_browser')
+		execute cmd
+	else
+		echoe("norns help browser not set")
+	endif
+endf
+
+" TODO
+fun! norns#findPi()
+	let cmd = 'sudo arp-scan --localnet --interface=wlo1 | grep Pi | awk "{print $1}"'
+	let g:norns_pi_addresses = systemlist(cmd)
 endf
 
 fun! norns#syncToNorns()
