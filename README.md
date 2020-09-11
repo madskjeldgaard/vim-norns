@@ -1,4 +1,5 @@
 # vim-norns
+![norns in action](norns-in-action.jpg)
 
 A rough (and work in progress) plugin for working remotely on scripts/projects for the monome [norns platform](https://monome.org/docs/norns/). It makes use of the websocketed REPL available in [maiden](https://monome.org/docs/norns/maiden/)
 
