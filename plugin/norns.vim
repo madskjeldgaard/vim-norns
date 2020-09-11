@@ -59,6 +59,7 @@ command! NornsEngineCommands call norns#listEngineCommands()
 command! NornsFind call norns#findNorns()
 command! NornsSync call norns#syncToNorns()
 command! NornsGreet call norns#greeting()
+command! NornsSSH call norns#ssh()
 
 """""""""""""""""""""""""""""""""""
 "  Syncronizing and running code  "
@@ -173,6 +174,12 @@ fun! norns#saveNornsAddr(ipaddr)
 	let g:norns_ip = a:ipaddr
 endf
 
+fun! norns#ssh()
+	let cmd = printf("sshpass -p %s ssh we@%s", g:norns_ssh_pass, g:norns_ip)
+	:split
+	execute ":terminal " . cmd
+endf
+
 """"""""""""""
 "  Mappings  "
 """"""""""""""
@@ -216,5 +223,10 @@ if !hasmapto(':NornsRun', 'ni')
 
 	nmap <F5> :NornsRun<cr>
 	imap <F5> <esc>:NornsRun<cr>
+endif
+
+if !hasmapto(':NornsSSH', 'ni')
+	nmap <F6> :NornsSSH<cr>
+	imap <F6> <esc>:NornsSSH<cr>
 endif
 

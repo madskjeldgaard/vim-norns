@@ -52,6 +52,7 @@ Command                        Description
 `NornsStart` 	Open the REPL and establish contact
 `NornsFind` 	Find your Norns on the local network and set global ip for it in vim
 `NornsSync` 	Manually sync local project with folder on Norns (normally not needed)
+`NornsSSH` 	Open terminal split ssh'ing into the norns
 `NornsReference` 	Open reference in browser
 `NornsStudies` 	Open Norns studies in browser
 `NornsEngineCommands` 	List all commands for the currently selected engine
@@ -77,4 +78,7 @@ MAPPINGS                                                       *scnvim-mappings*
                         Mode: Insert, Normal
 
 <F5>                    Run current project
+                        Mode: Insert, Normal
+
+<F6>                    Open terminal split ssh'ing into the norns
                         Mode: Insert, Normal
