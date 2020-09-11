@@ -72,7 +72,7 @@ endf
 fun! norns#syncToNorns()
 	call norns#getNornsProjectDir()
 	let cmd = printf('sshpass -p %s rsync -a --delete --exclude=".*" --delete-excluded %s we@%s:/home/we/dust/code/', g:norns_ssh_pass, g:norns_project_path, g:norns_ip)
-	execute printf("! %s", cmd)
+	silent execute printf("! %s", cmd)
 endf
 
 fun! norns#runThis()
