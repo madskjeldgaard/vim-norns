@@ -118,6 +118,10 @@ fun! norns#listEngineCommands()
 	call norns#sendToRepl("engine.list_commands()")
 endf
 
+fun! norns#listAvailableEngines()
+	call norns#sendToRepl("tab.print(engine.names)") 
+endf
+
 fun! norns#greeting()
 	call norns#sendToRepl("function redraw()" . "\<cr>")
 	call norns#sendToRepl("screen.clear()" . "\<cr>")
@@ -191,42 +195,47 @@ endf
 " if !hasmapto('<Plug>(scnvim-send-selection)', 'x')
 " 	xmap <buffer> <C-e> <Plug>(scnvim-send-selection)
 " endif
+fun! norns#defaultMappings()
+	if !hasmapto(':NornsStart', 'ni')
+		nmap <buffer> <F1> :NornsStart<cr>
+		imap <buffer> <F1> <esc>:NornsStart<cr>
+	endif
 
-if !hasmapto(':NornsStart', 'ni')
-	nmap <F1> :NornsStart<cr>
-	imap <F1> <esc>:NornsStart<cr>
-endif
+	if !hasmapto(':NornsFind', 'ni')
+		nmap <buffer> <F2> :NornsFind<cr>
+		imap <buffer> <F2> <esc>:NornsFind<cr>
+	endif
 
-if !hasmapto(':NornsFind', 'ni')
-	nmap <F2> :NornsFind<cr>
-	imap <F2> <esc>:NornsFind<cr>
-endif
+	if !hasmapto(':NornsReference', 'ni')
+		nmap <buffer> <F3> :NornsReference<cr>
+		imap <buffer> <F3> <esc>:NornsReference<cr>
+	endif
 
-if !hasmapto(':NornsReference', 'ni')
-	nmap <F3> :NornsReference<cr>
-	imap <F3> <esc>:NornsReference<cr>
-endif
+	if !hasmapto(':NornsGreet', 'ni')
+		nmap <buffer> <F4> :NornsGreet<cr>
+		imap <buffer> <F4> <esc>:NornsGreet<cr>
+	endif
 
-if !hasmapto(':NornsGreet', 'ni')
-	nmap <F4> :NornsGreet<cr>
-	imap <F4> <esc>:NornsGreet<cr>
-endif
+	if !hasmapto(':NornsGreet', 'ni')
+		nmap <buffer> <F4> :NornsGreet<cr>
+		imap <buffer> <F4> <esc>:NornsGreet<cr>
+	endif
 
-if !hasmapto(':NornsGreet', 'ni')
-	nmap <F4> :NornsGreet<cr>
-	imap <F4> <esc>:NornsGreet<cr>
-endif
+	if !hasmapto(':NornsRun', 'ni')
+		nmap <buffer> <C-e> :NornsRun<cr>
+		imap <buffer> <C-e> <esc>:NornsRun<cr>
 
-if !hasmapto(':NornsRun', 'ni')
-	nmap <C-e> :NornsRun<cr>
-	imap <C-e> <esc>:NornsRun<cr>
+		nmap <buffer> <F5> :NornsRun<cr>
+		imap <buffer> <F5> <esc>:NornsRun<cr>
+	endif
 
-	nmap <F5> :NornsRun<cr>
-	imap <F5> <esc>:NornsRun<cr>
-endif
+	if !hasmapto(':NornsSSH', 'ni')
+		nmap <buffer> <F6> :NornsSSH<cr>
+		imap <buffer> <F6> <esc>:NornsSSH<cr>
+	endif
+endf
 
-if !hasmapto(':NornsSSH', 'ni')
-	nmap <F6> :NornsSSH<cr>
-	imap <F6> <esc>:NornsSSH<cr>
-endif
-
+augroup NornsMappingGroup
+    autocmd!
+	autocmd FileType lua call norns#defaultMappings()
+augroup END
