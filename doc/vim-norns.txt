@@ -1,0 +1,80 @@
+*vim-norns.txt* vim-norns
+													*vim-norns*
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\~
+/// \\/// \\/////// \\//////// \\/// \\/// \\/////// \\~
+///// /// \/// \\/// \/// \\/// \///// /// \/// \\\\\\\~
+///////// \/// \\/// \//////// \\///////// \\/////// \\~
+/// ///// \/// \\/// \/// \\/// \/// ///// \\\\\\\/// \~
+/// \\/// \\/////// \\/// \\/// \/// \\/// \\/////// \\~
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\~
+
+1. Description..............................|vim-norns-description|
+   1.1 Acknowledgments
+2. Usage..............................|vim-norns-usage|
+3. Commands..............................|vim-norns-commands|
+4. Mappings.................................|vim-norns-mappings|
+==============================================================================
+DESCRIPTION                                                 *vim-norns-description*
+
+A plugin for working remotely with the Norns sound computer and it's maiden development platform.
+
+This plugin works by syncing a local folder on your main pc to an equivalent folder on the Norns via the network. Every time you make a change on your pc, it is reflected on the Norns.
+
+A terminal window will open in Vim with an interactive REPL for the Norns.
+
+The plugin also provides other niceties for developing for the Norns platform.
+
+Acknowledgments~
+
+This plugin borrows some code and ideas from scnvim and was initially inspired by Simon Vanderveldt's work with Atom/Norns: https://github.com/monome/norns/issues/1067 
+
+==============================================================================
+USAGE                                                 *vim-norns-usage*
+
+Open up a norns code project on your main computer (the one running vim).
+
+Set the ip address of your norns on your local network. By default, vim-norns expects this to be `norns.local` but if that doesn't work you can set it manually like so: 
+`let g:norns_ip = "192.168.0.70"`
+
+Or slighlty more automatically by executing the command `:NornsFind` which will search your local network and display a list of ip addresses. Choose the correct one on the list and hit enter.
+
+To start vim-norns then you simply execute the command `:NornsStart`
+
+This brings up the REPL. If succesful, your norns will briefly display a greeting from vim-norns. If not succesful, the REPL split will display an error (which is probably caused by not being able to find the norns on your network using the ip supplied).
+
+==============================================================================
+COMMANDS                                                 *vim-norns-commands*
+
+Command                        Description
+-------                        -----------
+`NornsRun` 	Run the current project
+`NornsStart` 	Open the REPL and establish contact
+`NornsFind` 	Find your Norns on the local network and set global ip for it in vim
+`NornsSync` 	Manually sync local project with folder on Norns (normally not needed)
+`NornsReference` 	Open reference in browser
+`NornsStudies` 	Open Norns studies in browser
+`NornsEngineCommands` 	List all commands for the currently selected engine
+`NornsGreet` 	Display greeting on Norns
+
+
+==============================================================================
+MAPPINGS                                                       *scnvim-mappings*
+
+<C-e>                   Run currenct project
+                        Mode: Insert, Normal
+
+<F1>                    Start REPL and try to establish contact
+                        Mode: Insert, Normal
+
+<F2>                    Scan network and choose an ip to connect to
+                        Mode: Insert, Normal
+
+<F3>                    Open up local norns lua reference
+                        Mode: Insert, Normal
+
+<F4>                    Display greeting on norns (if connected)
+                        Mode: Insert, Normal
+
+<F5>                    Run current project
+                        Mode: Insert, Normal

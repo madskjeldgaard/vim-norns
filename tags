@@ -1,0 +1,6 @@
+scnvim-mappings	doc/vim-norns.txt	/*scnvim-mappings*
+vim-norns	doc/vim-norns.txt	/*vim-norns*
+vim-norns-commands	doc/vim-norns.txt	/*vim-norns-commands*
+vim-norns-description	doc/vim-norns.txt	/*vim-norns-description*
+vim-norns-usage	doc/vim-norns.txt	/*vim-norns-usage*
+vim-norns.txt	doc/vim-norns.txt	/*vim-norns.txt*

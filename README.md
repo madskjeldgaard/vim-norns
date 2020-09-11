@@ -17,30 +17,16 @@ Unfortunately, this plugin has a lot of dependencies:
 - sshpass
 - rsync
 
+Optional:
+- Fzf / vim-fzf
+
 Fortunately, if you are on Arch Linux or Manjaro, they are easy to install using yay: 
-`yay -S rlwrap websocat sshpass rsync`
+`yay -S rlwrap websocat sshpass rsync fzf`
 
 ## Usage
-Run the command `:NornsStart` to start the connection and REPL
-
-Then, when you make a change to your files you can run `:RunOnNorns` to sync your project to the one on norns.
-
-These can of course be mapped to keys like so:
-```
-fun! NornsMappings()
-	nnoremap <C-e> :RunOnNorns<cr>
-	nnoremap <F1> :NornsStart<cr>
-endf
-
-augroup nornslua
-    autocmd!
-    autocmd FileType lua call LuaStuff()
-augroup end
-```
+See `:h norns` for information on usage
 
 ### IP
 The plugin expect norns to be on your local network as `norns.local` but this can be overwritten by setting the variable `g:norns_ip` to something else, like: `let g:norns_ip="192.168.0.70"`
 
-At some point, this will be automated somehow.
-
-
+The plugin comes with a helper function to aid in doing this: `:NornsFind`. This will display a list of all ip addresses on your network and by choosing one of these, the variable is set.

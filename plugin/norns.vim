@@ -31,7 +31,6 @@ augroup END
 let g:norns_ip = "norns.local" " TODO: Find a way to do this dynamically
 let g:norns_project_path = ""
 let g:norns_project_basename = ""
-let g:norns_greeting='Hello. Are you ready?'
 let g:norns_ssh_pass="sleep"
 
 " Set help browser
@@ -49,33 +48,24 @@ elseif executable('safari')
 	let g:norns_help_browser="safari"
 endif
 
-" Commands
-command! GetNornsProjectDir call norns#getNornsProjectDir()
-command! SyncToNorns call norns#syncToNorns()
-command! RunOnNorns call norns#runThis()
+""""""""""""""
+"  Commands  "
+""""""""""""""
+command! NornsRun call norns#runThis()
 command! NornsStart call norns#replStart()
 command! NornsReference call norns#openReference()
+command! NornsStudies call norns#openStudies()
+command! NornsEngineCommands call norns#listEngineCommands()
+command! NornsFind call norns#findNorns()
+command! NornsSync call norns#syncToNorns()
+command! NornsGreet call norns#greeting()
 
+"""""""""""""""""""""""""""""""""""
+"  Syncronizing and running code  "
+"""""""""""""""""""""""""""""""""""
 fun! norns#getNornsProjectDir()
 	let g:norns_project_path = expand("%:p:h")	
 	let g:norns_project_basename = expand("%:p:h:t")	
-endf
-
-fun! norns#openReference()
-	let url = 'https://monome.org/docs/norns/script-reference/'
-	let cmd = printf("! %s %s", g:norns_help_browser, url)
-
-	if exists('g:norns_help_browser')
-		execute cmd
-	else
-		echoe("norns help browser not set")
-	endif
-endf
-
-" TODO
-fun! norns#findPi()
-	let cmd = 'sudo arp-scan --localnet --interface=wlo1 | grep Pi | awk "{print $1}"'
-	let g:norns_pi_addresses = systemlist(cmd)
 endf
 
 fun! norns#syncToNorns()
@@ -99,20 +89,6 @@ fun! norns#runThis()
 	call norns#sendToRepl(luacmd)
 endf
 
-fun! norns#replStart()
-	" Heavily inspired by: https://github.com/monome/norns/issues/1067 
-	"
-	call norns#getNornsProjectDir()
-
-	let cmd = printf("rlwrap websocat --protocol bus.sp.nanomsg.org ws://%s:5555", g:norns_ip)
-	
-	" Open terminal and save buffer id in global variable
-	execute ":new"	
-	let g:norns_chan_id = termopen(cmd)
-
-	call norns#sendToRepl("print(\"" . g:norns_greeting . "\")" . "\<cr>")
-endf
-
 " Convert to chansend-able raw data
 " Stolen from scnvim
 fun! norns#sendToRepl(data)
@@ -120,54 +96,125 @@ fun! norns#sendToRepl(data)
 	call chansend(g:norns_chan_id, code . "\<cr>")
 endf
 
-" From SCNVIM
-" https://github.com/davidgranstrom/scnvim/blob/2c51ad41aaae8abee43113fd13326b9461c67eed/autoload/scnvim.vim
-" function! s:get_visual_selection() abort
-"   let [lnum1, col1] = getpos("'<")[1:2]
-"   let [lnum2, col2] = getpos("'>")[1:2]
-"   if &selection ==# 'exclusive'
-"     let col2 -= 1
-"   endif
-"   let lines = getline(lnum1, lnum2)
-"   let lines[-1] = lines[-1][:col2 - 1]
-"   let lines[0] = lines[0][col1 - 1:]
-"   return {
-"         \ 'text': join(lines, "\n"),
-"         \ 'line_start': lnum1,
-"         \ 'line_end': lnum2,
-"         \ 'col_start': col1,
-"         \ 'col_end': col2,
-"         \ }
-" endfunction
+fun! norns#replStart()
+	" Heavily inspired by: https://github.com/monome/norns/issues/1067 
+	call norns#getNornsProjectDir()
 
-" function! Nornssend_line(start, end) abort
-"   let is_single_line = a:start == 0 && a:end == 0
-"   if is_single_line
-"     let line = line('.')
-"     let str = getline(line)
-"     call Nornssend_line(str)
-"   else
-"     let lines = getline(a:start, a:end)
-"     let last_line = lines[-1]
-"     let end_paren = match(last_line, ')')
-"     " don't send whatever happens after block closure
-"     let lines[-1] = last_line[:end_paren]
-"     let str = join(lines, "\n")
-"     call norns#sendToRepl(str)
-"   endif
-" endfunction
+	let cmd = printf("rlwrap websocat --protocol bus.sp.nanomsg.org ws://%s:5555", g:norns_ip)
 
-" function! Nornssend_selection() abort
-"   let obj = s:get_visual_selection()
-"   call norns#sendToRepl(obj.text)
-" endfunction
+	" Open terminal and save buffer id in global variable
+	execute ":new"	
+	let g:norns_chan_id = termopen(cmd)
 
-" function! Nornssend_block() abort
-"   let [start, end] = s:get_block()
-"   if start > 0 && end > 0 && start != end
-"     call Nornssend_line(start, end)
-"   else
-"     call Nornssend_line(0, 0)
-"   endif
-" endfunction
+	" Display greeting on norns
+	call norns#greeting()
+endf
+
+""""""""""""""
+"  Niceties  "
+""""""""""""""
+fun! norns#listEngineCommands()
+	call norns#sendToRepl("engine.list_commands()")
+endf
+
+fun! norns#greeting()
+	call norns#sendToRepl("function redraw()" . "\<cr>")
+	call norns#sendToRepl("screen.clear()" . "\<cr>")
+	call norns#sendToRepl("screen.level(15)" . "\<cr>")
+	call norns#sendToRepl("screen.move(0,40)" . "\<cr>")
+	call norns#sendToRepl("screen.text(\" Vim says:\")" . "\<cr>")
+	call norns#sendToRepl("screen.move(0,60)" . "\<cr>")
+	call norns#sendToRepl("screen.text(\"Hello. Are you ready? \")" . "\<cr>")
+	call norns#sendToRepl("screen.update()" . "\<cr>")
+	call norns#sendToRepl("end" . "\<cr>")
+endf
+
+"""""""""""""""""""""""""""""""
+"  Help files and references  "
+"""""""""""""""""""""""""""""""
+fun! norns#openReference()
+	let url = printf("%s/doc/", g:norns_ip)
+	let cmd = printf("! %s %s", g:norns_help_browser, url)
+
+	if exists('g:norns_help_browser')
+		execute cmd
+	else
+		echoe("norns help browser not set")
+	endif
+endf
+
+fun! norns#openStudies()
+	let url = 'https://monome.org/docs/norns/studies-landing/'
+	let cmd = printf("! %s %s", g:norns_help_browser, url)
+
+	if exists('g:norns_help_browser')
+		execute cmd
+	else
+		echoe("norns help browser not set")
+	endif
+endf
+
+"""""""""""""""""""
+"  Network stuff  "
+"""""""""""""""""""
+
+" Find all devices on network
+fun! norns#findNorns()
+	if exists("*fzf#run")		
+		let cmd = "arp -a| awk '{print $2}'| sed 's/(//g'| sed 's/)//g'"
+		call fzf#run({'sink': function('norns#saveNornsAddr'), 'source': cmd})
+	else
+		echoe("fzf not installed!")
+	endif
+endf
+
+" Save address
+fun! norns#saveNornsAddr(ipaddr)
+	let g:norns_ip = a:ipaddr
+endf
+
+""""""""""""""
+"  Mappings  "
+""""""""""""""
+" if !hasmapto('<Plug>(scnvim-send-line)', 'ni')
+" 	nmap <buffer> <M-e> <Plug>(scnvim-send-line)
+" 	imap <buffer> <M-e> <c-o><Plug>(scnvim-send-line)
+" endif
+
+" if !hasmapto('<Plug>(scnvim-send-selection)', 'x')
+" 	xmap <buffer> <C-e> <Plug>(scnvim-send-selection)
+" endif
+
+if !hasmapto(':NornsStart', 'ni')
+	nmap <F1> :NornsStart<cr>
+	imap <F1> <esc>:NornsStart<cr>
+endif
+
+if !hasmapto(':NornsFind', 'ni')
+	nmap <F2> :NornsFind<cr>
+	imap <F2> <esc>:NornsFind<cr>
+endif
+
+if !hasmapto(':NornsReference', 'ni')
+	nmap <F3> :NornsReference<cr>
+	imap <F3> <esc>:NornsReference<cr>
+endif
+
+if !hasmapto(':NornsGreet', 'ni')
+	nmap <F4> :NornsGreet<cr>
+	imap <F4> <esc>:NornsGreet<cr>
+endif
+
+if !hasmapto(':NornsGreet', 'ni')
+	nmap <F4> :NornsGreet<cr>
+	imap <F4> <esc>:NornsGreet<cr>
+endif
+
+if !hasmapto(':NornsRun', 'ni')
+	nmap <C-e> :NornsRun<cr>
+	imap <C-e> <esc>:NornsRun<cr>
+
+	nmap <F5> :NornsRun<cr>
+	imap <F5> <esc>:NornsRun<cr>
+endif
 
