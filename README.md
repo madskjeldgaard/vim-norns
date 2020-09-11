@@ -10,6 +10,8 @@ And David Granstöm's scnvim:
 github.com/davidgranstrom/scnvim
 
 ## Dependencies
+The plugin was made for NVIM but may work in Vim, I dunno.
+
 Unfortunately, this plugin has a lot of dependencies:
 
 - rlwrap
