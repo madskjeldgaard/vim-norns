@@ -14,18 +14,30 @@
 "
 " Install on arch using yay: 
 " yay -S rlwrap websocat sshpass rsync
-
+"
 """""""""""""""""""""""""""""""""""""""""""""
+
+if exists('g:norns_vim_loaded')
+  finish
+endif
+let g:norns_vim_loaded = 1
+
+" augroup to be used w/ ftplugin
+augroup norns
+  autocmd!
+augroup END
 
 " Global variables
 let g:norns_ip = "192.168.0.70" " TODO: Find a way to do this dynamically
 let g:norns_project_path = ""
 let g:norns_project_basename = ""
+let g:norns_greeting='Hello. Are you ready?'
 
 " Commands
 command! GetNornsProjectDir call norns#getNornsProjectDir()
 command! SyncToNorns call norns#syncToNorns()
 command! RunOnNorns call norns#runThis()
+command! NornsStart call norns#replStart()
 
 fun! norns#getNornsProjectDir()
 	let g:norns_project_path = expand("%:p:h")	
@@ -40,7 +52,16 @@ endf
 
 fun! norns#runThis()
 	let luacmd = printf("norns.script.load(\"code/%s/%s.lua\")", g:norns_project_basename, g:norns_project_basename)
+
+	" Make sure REPL has been started
+	if !exists('g:norns_chan_id')
+		call norns#replStart()	
+	endif
+
+	" Send files to Pi
 	call norns#syncToNorns()
+
+	" Tell Pi to load this file / project
 	call norns#sendToRepl(luacmd)
 endf
 
@@ -54,6 +75,8 @@ fun! norns#replStart()
 	" Open terminal and save buffer id in global variable
 	execute ":new"	
 	let g:norns_chan_id = termopen(cmd)
+
+	call norns#sendToRepl("print(\"" . g:norns_greeting . "\")" . "\<cr>")
 endf
 
 " Convert to chansend-able raw data
