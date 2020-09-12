@@ -1,7 +1,11 @@
 # vim-norns
 ![norns in action](norns-in-action.jpg)
 
-A rough (and work in progress) plugin for working remotely on scripts/projects for the monome [norns platform](https://monome.org/docs/norns/). It makes use of the websocketed REPL available in [maiden](https://monome.org/docs/norns/maiden/)
+A nvim plugin for working remotely with the monome [norns platform](https://monome.org/docs/norns/). It makes use of the websocketed REPL available in [maiden](https://monome.org/docs/norns/maiden/) and a bunch of nice unix tools to make communication between norns and host computer super easy. 
+
+When working on projects, it works by syncing a local folder on your computer to an equivalent folder on the norns and allowing you to execute code remotely.
+
+It also features an easy way to work with the norns file systems. From within vim you can ssh into the norns, you can easily download files from it to your host computer etcetera.
 
 Heavily inspired by  simonvanderveldt's work in atom:
 https://github.com/monome/norns/issues/1067
@@ -10,7 +14,7 @@ And David Granstöm's scnvim:
 github.com/davidgranstrom/scnvim
 
 ## Dependencies
-The plugin was made for NVIM but may work in Vim, I dunno.
+The plugin was made for NVIM
 
 Unfortunately, this plugin has a lot of dependencies:
 
