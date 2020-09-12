@@ -33,6 +33,8 @@ let g:norns_project_path = ""
 let g:norns_project_basename = ""
 let g:norns_ssh_pass="sleep"
 
+let g:norns_repl_direction="t" " v(ertical), h(orizontal), t(ab)
+
 " Set help browser
 if exists('$BROWSER')
 	let g:norns_help_browser=$BROWSER
@@ -54,7 +56,7 @@ endif
 command! NornsRun call norns#runThis()
 command! NornsStart call norns#replStart()
 command! NornsReference call norns#openReference()
-command! NornsStudies call norns#openStudies()
+command! NornsStudies call norns#learn()
 command! NornsEngineCommands call norns#listEngineCommands()
 command! NornsFind call norns#findNorns()
 command! NornsSync call norns#syncToNorns()
@@ -101,10 +103,19 @@ fun! norns#replStart()
 	" Heavily inspired by: https://github.com/monome/norns/issues/1067 
 	call norns#getNornsProjectDir()
 
+	" The base command for the remote repl in maiden
 	let cmd = printf("rlwrap websocat --protocol bus.sp.nanomsg.org ws://%s:5555", g:norns_ip)
 
+	" Create split for terminal
+	if g:norns_repl_direction == "v"
+		execute ":vnew"	
+	elseif g:norns_repl_direction == "h"
+		execute ":hnew"	
+	else
+		execute ":tabnew"
+	endif
+
 	" Open terminal and save buffer id in global variable
-	execute ":new"	
 	let g:norns_chan_id = termopen(cmd)
 
 	" Display greeting on norns
@@ -148,16 +159,43 @@ fun! norns#openReference()
 	endif
 endf
 
-fun! norns#openStudies()
-	let url = 'https://monome.org/docs/norns/studies-landing/'
-	let cmd = printf("! %s %s", g:norns_help_browser, url)
+" fun! norns#openStudies()
+" 	let url = 'https://monome.org/docs/norns/studies-landing/'
+" 	let cmd = printf("! %s %s", g:norns_help_browser, url)
 
-	if exists('g:norns_help_browser')
-		execute cmd
-	else
-		echoe("norns help browser not set")
-	endif
+" 	if exists('g:norns_help_browser')
+" 		execute cmd
+" 	else
+" 		echoe("norns help browser not set")
+" 	endif
+" endf
+
+fun! norns#openNornsUrl(key)
+	let url = g:norns_urls[a:key]
+	let browser = "firefox"
+	exe printf("! " . browser . " %s", url)
 endf
+
+fun! norns#learn()
+	call fzf#run({'sink': function('norns#openNornsUrl'), 'source': sort(keys(g:norns_urls))})
+endf
+
+let g:norns_urls = {
+	\'norns scripting faq': 'https://monome.org/docs/norns/faq/',
+	\'norns scripting reference': 'https://monome.org/docs/norns/script-reference/',
+	\'norns study 1: many tomorrows (variables, simple maths, keys + encoders)': 'https://monome.org/docs/norns/study-1/',
+	\'norns study 2: patterning (screen drawing, for/while loops, tables)': 'https://monome.org/docs/norns/study-2/',
+	\'norns study 3: spacetime (functions, parameters, time)': 'https://monome.org/docs/norns/study-3/',
+	\'norns study 4: physical (grids+midi)': 'https://monome.org/docs/norns/study-4/',
+	\'norns study 5: streams (system polls, osc, file storage)': 'https://monome.org/docs/norns/study-5/',
+	\'softcut studies': 'https://monome.org/docs/norns/softcut/',
+	\'clock studies': 'https://monome.org/docs/norns/clocks/',
+	\'neaunoire norns tutorial': 'https://llllllll.co/t/norns-tutorial/23241',
+	\'Programming in lua (first edition)': 'https://www.lua.org/pil/contents.html',
+	\'learn lua in 15 minutes': 'http://tylerneylon.com/a/learn-lua/', 
+	\'llllllll.co': 'https://llllllll.co/tag/norns',
+	\'norns supercollider and lua part 1': 'https://medium.com/@kidsputnik/monome-norns-supercollider-and-lua-part-1-d97646306973'
+	\}
 
 """""""""""""""""""
 "  Network stuff  "

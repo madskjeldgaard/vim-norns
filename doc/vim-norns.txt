@@ -34,12 +34,12 @@ USAGE                                                 *vim-norns-usage*
 
 Open up a norns code project on your main computer (the one running vim).
 
-Set the ip address of your norns on your local network. By default, vim-norns expects this to be `norns.local` but if that doesn't work you can set it manually like so: 
-`let g:norns_ip = "192.168.0.70"`
+Set the ip address of your norns on your local network. 
 
-Or slighlty more automatically by executing the command `:NornsFind` which will search your local network and display a list of ip addresses. Choose the correct one on the list and hit enter.
+By default, vim-norns expects this to be `norns.local` but if that doesn't work you can set it manually. On your norns, press the K2 button on the main screen (the one with select/system/sleep), this will show the ip of norns. You can then run the `:NornsFind` command in VIM and choose the ip from all the ips available on your network or hardcode it on the command line by setting the ip variable:
+`:let g:norns_ip = "192.168.0.70"`.
 
-To start vim-norns then you simply execute the command `:NornsStart`
+After setting the IP, you can start vim-norns with the command `:NornsStart` or by pressing <F1>
 
 This brings up the REPL. If succesful, your norns will briefly display a greeting from vim-norns. If not succesful, the REPL split will display an error (which is probably caused by not being able to find the norns on your network using the ip supplied).
 
