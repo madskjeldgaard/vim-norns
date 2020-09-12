@@ -39,36 +39,47 @@ See `:h norns` for information on usage
 
 ### Commands
 `:NornsStart` 	
+
 Open the REPL and establish contact
 
 `:NornsFind` 	
+
 Find your Norns on the local network and set global ip for it in vim
 
 `:NornsRun` 	
+
 Run the current project
 
 `:NornsSync` 	
+
 Manually sync local project with folder on Norns (normally not needed)
 
 `:NornsSSH` 	
+
 Open terminal split ssh'ing into the norns
 
 `:NornsReference` 	
+
 Open reference in browser
 
 `:NornsStudies` 	
+
 Open Norns studies in browser
 
 `:NornsEngineCommands` 	
+
 List all commands for the currently selected engine
 
 `:NornsGreet` 	
+
 Display greeting on Norns
 
 `:NornsGetTapes` 	
+
 Download tapes from norns to this computer (will be put in "~/Downloads" by default, this can be changed by setting `let g:norns_download_destination = "~/Downloads/"`)
 
 `:NornsGetReels` 	
+
 Same as above but for the reels folder
 
 ### IP
