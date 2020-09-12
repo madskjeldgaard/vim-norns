@@ -5,7 +5,7 @@ A nvim plugin for working remotely with the monome [norns platform](https://mono
 
 When working on projects, it works by syncing a local folder on your computer to an equivalent folder on the norns and allowing you to execute code remotely.
 
-It also features an easy way to work with the norns file systems. From within vim you can ssh into the norns, you can easily download files from it to your host computer etcetera.
+It also has features to make it easy to work with the norns file system from your host computer. From within vim you can ssh into the norns, you can easily download files from it to your host computer etcetera.
 
 Heavily inspired by  simonvanderveldt's work in atom:
 https://github.com/monome/norns/issues/1067
