@@ -33,7 +33,8 @@ let g:norns_project_path = ""
 let g:norns_project_basename = ""
 let g:norns_ssh_pass="sleep"
 
-let g:norns_repl_direction="t" " v(ertical), h(orizontal), t(ab)
+let g:norns_download_destination = "~/Downloads/"
+let g:norns_split_direction="t" " v(ertical), h(orizontal), t(ab)
 
 " Set help browser
 if exists('$BROWSER')
@@ -62,6 +63,8 @@ command! NornsFind call norns#findNorns()
 command! NornsSync call norns#syncToNorns()
 command! NornsGreet call norns#greeting()
 command! NornsSSH call norns#ssh()
+command! NornsGetTapes call norns#getTapes()
+command! NornsGetReels call norns#getReels()
 
 """""""""""""""""""""""""""""""""""
 "  Syncronizing and running code  "
@@ -107,9 +110,9 @@ fun! norns#replStart()
 	let cmd = printf("rlwrap websocat --protocol bus.sp.nanomsg.org ws://%s:5555", g:norns_ip)
 
 	" Create split for terminal
-	if g:norns_repl_direction == "v"
+	if g:norns_split_direction == "v"
 		execute ":vnew"	
-	elseif g:norns_repl_direction == "h"
+	elseif g:norns_split_direction == "h"
 		execute ":hnew"	
 	else
 		execute ":tabnew"
@@ -125,6 +128,29 @@ endf
 """"""""""""""
 "  Niceties  "
 """"""""""""""
+fun! norns#download(nornsFolder)
+	let cmd = printf("sshpass -p '%s' scp -v -r we@%s:%s %s", g:norns_ssh_pass, g:norns_ip, a:nornsFolder, g:norns_download_destination)
+
+	" Create split for terminal
+	if g:norns_split_direction == "v"
+		execute ":vnew"	
+	elseif g:norns_split_direction == "h"
+		execute ":hnew"	
+	else
+		execute ":tabnew"
+	endif
+
+	execute ":terminal " . cmd
+endf
+
+fun! norns#getTapes()
+	call norns#download("/home/we/dust/audio/tape")
+endf
+
+fun! norns#getReels()
+	call norns#download("/home/we/dust/audio/reels")
+endf
+
 fun! norns#listEngineCommands()
 	call norns#sendToRepl("engine.list_commands()")
 endf
