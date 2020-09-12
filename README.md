@@ -73,6 +73,18 @@ Manually sync local project with folder on Norns (normally not needed)
 
 Open terminal split ssh'ing into the norns
 
+`:NornsReboot` 	
+
+Reboot the norns device (by running `sudo reboot` on it)
+
+`:NornsHalt` 	
+
+Halt the norns device (by running `sudo halt` on it)
+
+`:NornsRestart` 	
+
+Restart the norns software (by executing the `start.sh` and `stop.sh` script that comes with norns)
+
 `:NornsReference` 	
 
 Open reference in browser

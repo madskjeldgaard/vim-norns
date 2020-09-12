@@ -32,8 +32,7 @@ This plugin borrows some code and ideas from scnvim and was initially inspired b
 ==============================================================================
 USAGE                                                 *vim-norns-usage*
 
-Open up a norns code project on your main computer (the one running vim).
-
+Open up a norns code project on your main computer (the one running vim).  
 Set the ip address of your norns on your local network. 
 
 By default, vim-norns expects this to be `norns.local` but if that doesn't work you can set it manually. On your norns, press the K2 button on the main screen (the one with select/system/sleep), this will show the ip of norns. You can then run the `:NornsFind` command in VIM and choose the ip from all the ips available on your network or hardcode it on the command line by setting the ip variable:
@@ -50,6 +49,9 @@ Command                        Description
 -------                        -----------
 `NornsRun` 	Run the current project
 `NornsStart` 	Open the REPL and establish contact
+`NornsReboot` 	Reboot the norns device (by running `sudo reboot` on it)
+`NornsRestart` 	Restart the norns software (by executing the `start.sh` and `stop.sh` script that comes with norns)
+`NornsHalt` 	Halt the norns device (by running `sudo halt` on it)
 `NornsFind` 	Find your Norns on the local network and set global ip for it in vim
 `NornsSync` 	Manually sync local project with folder on Norns (normally not needed)
 `NornsSSH` 	Open terminal split ssh'ing into the norns

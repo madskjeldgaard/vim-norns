@@ -56,6 +56,9 @@ endif
 """"""""""""""
 command! NornsRun call norns#runThis()
 command! NornsStart call norns#replStart()
+command! NornsReboot call norns#reboot()
+command! NornsRestart call norns#restart()
+command! NornsHalt call norns#halt()
 command! NornsReference call norns#openReference()
 command! NornsStudies call norns#learn()
 command! NornsEngineCommands call norns#listEngineCommands()
@@ -65,6 +68,31 @@ command! NornsGreet call norns#greeting()
 command! NornsSSH call norns#ssh()
 command! NornsGetTapes call norns#getTapes()
 command! NornsGetReels call norns#getReels()
+
+"""""""""""""""""""""""
+"  remote os control  "
+"""""""""""""""""""""""
+fun! norns#sshpass()
+	return printf('sshpass -p %s', g:norns_ssh_pass)	
+endf
+
+fun! norns#remotely_execute(command)
+	let cmd = printf("! %s ssh we@%s '%s'", norns#sshpass(), g:norns_ip, a:command)
+	execute cmd
+endf
+
+fun! norns#restart()
+	let cmd = "bash /home/we/norns/stop.sh; sleep 5 && bash /home/we/norns/start.sh"
+	call norns#remotely_execute(cmd)
+endf
+
+fun! norns#reboot()
+	call norns#remotely_execute("sudo reboot")
+endf
+
+fun! norns#halt()
+	call norns#remotely_execute("sudo halt")
+endf
 
 """""""""""""""""""""""""""""""""""
 "  Syncronizing and running code  "
@@ -76,7 +104,7 @@ endf
 
 fun! norns#syncToNorns()
 	call norns#getNornsProjectDir()
-	let cmd = printf('sshpass -p %s rsync -a --delete --exclude=".*" --delete-excluded %s we@%s:/home/we/dust/code/', g:norns_ssh_pass, g:norns_project_path, g:norns_ip)
+	let cmd = printf('%s rsync -a --delete --exclude=".*" --delete-excluded %s we@%s:/home/we/dust/code/', norns#sshpass(), g:norns_project_path, g:norns_ip)
 	silent execute printf("! %s", cmd)
 endf
 
@@ -124,12 +152,11 @@ fun! norns#replStart()
 	" Display greeting on norns
 	call norns#greeting()
 endf
-
 """"""""""""""
-"  Niceties  "
+"  Download  "
 """"""""""""""
 fun! norns#download(nornsFolder)
-	let cmd = printf("sshpass -p '%s' scp -v -r we@%s:%s %s", g:norns_ssh_pass, g:norns_ip, a:nornsFolder, g:norns_download_destination)
+	let cmd = printf("%s scp -v -r we@%s:%s %s", norns#sshpass(), g:norns_ip, a:nornsFolder, g:norns_download_destination)
 
 	" Create split for terminal
 	if g:norns_split_direction == "v"
@@ -150,6 +177,10 @@ endf
 fun! norns#getReels()
 	call norns#download("/home/we/dust/audio/reels")
 endf
+
+""""""""""""""
+"  Niceties  "
+""""""""""""""
 
 fun! norns#listEngineCommands()
 	call norns#sendToRepl("engine.list_commands()")
@@ -179,22 +210,11 @@ fun! norns#openReference()
 	let cmd = printf("! %s %s", g:norns_help_browser, url)
 
 	if exists('g:norns_help_browser')
-		execute cmd
+		silent execute cmd
 	else
 		echoe("norns help browser not set")
 	endif
 endf
-
-" fun! norns#openStudies()
-" 	let url = 'https://monome.org/docs/norns/studies-landing/'
-" 	let cmd = printf("! %s %s", g:norns_help_browser, url)
-
-" 	if exists('g:norns_help_browser')
-" 		execute cmd
-" 	else
-" 		echoe("norns help browser not set")
-" 	endif
-" endf
 
 fun! norns#openNornsUrl(key)
 	let url = g:norns_urls[a:key]
@@ -243,7 +263,7 @@ fun! norns#saveNornsAddr(ipaddr)
 endf
 
 fun! norns#ssh()
-	let cmd = printf("sshpass -p %s ssh we@%s", g:norns_ssh_pass, g:norns_ip)
+	let cmd = printf("%s ssh we@%s", norns#sshpass(), g:norns_ip)
 	:split
 	execute ":terminal " . cmd
 endf
