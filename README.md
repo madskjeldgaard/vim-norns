@@ -18,21 +18,29 @@ github.com/davidgranstrom/scnvim
 Using [vim-plug](https://github.com/junegunn/vim-plug):
 `Plug 'madskjeldgaard/vim-norns'`
 
-## Dependencies
-The plugin was made for NVIM
+## Requirements
+This plugin was aimed at use with linux but will work with MacOS as well if you can get the required external dependencies installed.
 
-Unfortunately, this plugin has a lot of dependencies:
+### Dependencies
+* NVIM
+* rlwrap
+* websocat
+* sshpass
+* rsync
 
-- rlwrap
-- websocat
-- sshpass
-- rsync
+Optional but recommended:
+* Fzf / vim-fzf
 
-Optional:
-- Fzf / vim-fzf
+### Installing dependencies
 
-Fortunately, if you are on Arch Linux or Manjaro, they are easy to install using yay: 
+#### Install on Arch Linux:
 `yay -S rlwrap websocat sshpass rsync fzf`
+
+#### Install on MacOS with homebrew (untested):
+`brew install rlwrap websocat rsync fzf`
+
+There is no official package for sshpass in brew at the moment, but this may work:
+`brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb`
 
 ## Usage
 
